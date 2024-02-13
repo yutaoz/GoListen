@@ -25,6 +25,7 @@ type Packet struct {
 	m_data       [256 - (4 * 2)]byte
 }
 
+// todo: put networking functions in separate module
 func ReadPacket(conn net.Conn, packet *Packet) bool {
 	buf := make([]byte, 256)
 	packetRead := false
@@ -69,13 +70,15 @@ func CreateSongRequestPacket(packet *Packet, song string) {
 }
 
 func main() {
-	conn, err := net.Dial("tcp", "localhost:3017")
+	conn, err := net.Dial("tcp", "localhost:4998")
 	if err != nil {
 		fmt.Println("Error connecting to server:", err)
 		return
 	}
 	defer conn.Close()
 
+	// create a song request
+	// todo: handle request input from command line
 	fmt.Println("Connected to server")
 	var SongReqPack Packet
 	CreateSongRequestPacket(&SongReqPack, "Dream.mp3")
@@ -85,6 +88,7 @@ func main() {
 
 	var endConnection bool
 
+	// handle packet receive from server
 	for !endConnection {
 		var serverPacket Packet
 		if ReadPacket(conn, &serverPacket) {
@@ -121,24 +125,5 @@ func main() {
 	speaker.Play(streamer)
 	// wait until the music has finished playing
 	select {}
-
-	// f, err := os.Open("Dream.mp3")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// streamer, format, err := mp3.Decode(f)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// defer streamer.Close()
-
-	// speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
-	// done := make(chan bool)
-	// speaker.Play(beep.Seq(streamer, beep.Callback(func() {
-	// 	done <- true
-	// })))
-
-	// <-done
 
 }

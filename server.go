@@ -58,7 +58,7 @@ func SendPacket(conn net.Conn, packet *Packet) {
 }
 
 func SendMusic(conn net.Conn, song string) {
-	musicFileName := song //"sfx/" +
+	musicFileName := song
 	musicContent, err := ioutil.ReadFile(musicFileName)
 	if err != nil {
 		fmt.Println("couldnt read music file")
@@ -105,12 +105,11 @@ func SendMusic(conn net.Conn, song string) {
 
 func main() {
 	fmt.Println("Waiting for connection")
-	l, err := net.Listen("tcp", ":3017")
+	l, err := net.Listen("tcp", ":4998")
 	if err != nil {
 		fmt.Println("Network error")
 	}
-
-	defer l.Close() // make sure Close gets called before we exit main
+	defer l.Close()
 
 	c, err := l.Accept()
 	if err != nil {
@@ -127,7 +126,7 @@ func main() {
 			break
 		}
 
-		// Wait for a packet from the client
+		// client packet handler
 		var clientPacket Packet
 		if ReadPacket(c, &clientPacket) {
 			switch clientPacket.m_packetType {
