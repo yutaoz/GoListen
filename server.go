@@ -137,7 +137,7 @@ func main() {
 
 				SendMusic(c, songRequested)
 			case PACKET_END_CONNECTION:
-				fmt.Println("Disconnect packet recevied")
+				fmt.Println("Disconnect packet received")
 				clientDisconnect = true
 
 			}
